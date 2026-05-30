@@ -1,1 +1,2 @@
-git add requirements.txt
+pygame==2.6.1
+pytest-timeout==2.2.1
