@@ -35,9 +35,9 @@ clock = pg.time.Clock()
 class GameObject:
     """Базовый класс: позиция и цвет."""
 
-    def __init__(self):
-        self.position = START_POSITION
-        self.body_color = WHITE
+    def __init__(self, position=START_POSITION, body_color=WHITE):
+        self.position = position
+        self.body_color = body_color
 
     def draw(self):
         """Абстрактный метод."""
@@ -48,7 +48,7 @@ class GameObject:
 
     def draw_cell(self, position, color=None):
         """Отрисовывает одну ячейку."""
-        rect_color = color if color is not None else self.body_color
+        rect_color = color or self.body_color
         rect = pg.Rect(position, (GRID_SIZE, GRID_SIZE))
         pg.draw.rect(screen, rect_color, rect)
         pg.draw.rect(screen, BORDER_COLOR, rect, 1)
@@ -57,13 +57,10 @@ class GameObject:
 class Apple(GameObject):
     """Класс яблока. Наследуется от GameObject."""
 
-    def __init__(self, occupied_positions=None):
+    def __init__(self, occupied_positions=None, color=APPLE_COLOR):
         """Создает яблоко в случайной позиции."""
-        super().__init__()
-        self.body_color = APPLE_COLOR
-        positions_to_use = (
-            occupied_positions if occupied_positions else []
-        )
+        super().__init__(body_color=color)
+        positions_to_use = occupied_positions or []
         self.randomize_position(positions_to_use)
 
     def randomize_position(self, occupied_positions):
@@ -71,9 +68,8 @@ class Apple(GameObject):
         while True:
             x = randint(0, GRID_WIDTH - 1) * GRID_SIZE
             y = randint(0, GRID_HEIGHT - 1) * GRID_SIZE
-            new_pos = (x, y)
-            if new_pos not in occupied_positions:
-                self.position = new_pos
+            self.position = (x, y)
+            if self.position not in occupied_positions:
                 break
 
     def draw(self):
@@ -84,12 +80,11 @@ class Apple(GameObject):
 class Snake(GameObject):
     """Класс змейки. Наследуется от GameObject."""
 
-    def __init__(self):
+    def __init__(self, color=SNAKE_COLOR):
         """Змейка в центре поля с начальным размером 1"""
-        super().__init__()
+        super().__init__(body_color=color)
         self.length = 1
-        self.positions = [START_POSITION]
-        self.body_color = SNAKE_COLOR
+        self.positions = [self.position]
         self.direction = RIGHT
         self.next_direction = None
 
@@ -121,7 +116,7 @@ class Snake(GameObject):
     def reset(self):
         """Сбрасывает змейку к изначальной."""
         self.length = 1
-        self.positions = [START_POSITION]
+        self.positions = [self.position]
         self.direction = choice([UP, DOWN, LEFT, RIGHT])
         self.next_direction = None
 
@@ -162,12 +157,11 @@ def main():
         handle_keys(snake)
         snake.update_direction()
         snake.move()
-        if snake.get_head_position() in snake.positions[1:]:
+        if snake.get_head_position() in snake.positions[4:]:
             snake.reset()
             apple.randomize_position(snake.positions)
-            continue
 
-        if snake.get_head_position() == apple.position:
+        elif snake.get_head_position() == apple.position:
             snake.length += 1
             apple.randomize_position(snake.positions)
 
