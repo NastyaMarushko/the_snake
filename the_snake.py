@@ -34,6 +34,7 @@ clock = pg.time.Clock()
 
 class GameObject:
     """Базовый класс: позиция и цвет."""
+
     def __init__(self):
         self.position = START_POSITION
         self.body_color = WHITE
@@ -55,6 +56,7 @@ class GameObject:
 
 class Apple(GameObject):
     """Класс яблока. Наследуется от GameObject."""
+
     def __init__(self, occupied_positions=None):
         """Создает яблоко в случайной позиции."""
         super().__init__()
@@ -81,6 +83,7 @@ class Apple(GameObject):
 
 class Snake(GameObject):
     """Класс змейки. Наследуется от GameObject."""
+
     def __init__(self):
         """Змейка в центре поля с начальным размером 1"""
         super().__init__()
@@ -91,7 +94,7 @@ class Snake(GameObject):
         self.next_direction = None
 
     def get_head_position(self):
-        """ Возвращает координаты головы змейки."""
+        """Возвращает координаты головы змейки."""
         return self.positions[0]
 
     def update_direction(self):
@@ -123,12 +126,13 @@ class Snake(GameObject):
         self.next_direction = None
 
     def draw(self):
-        """ Отрисовывает все части тела змейки."""
+        """Отрисовывает все части тела змейки."""
         for position in self.positions:
             self.draw_cell(position)
 
 
 def handle_keys(snake):
+    """Обрабатывает нажатия клавиш игроком."""
     for event in pg.event.get():
         if event.type == pg.QUIT:
             sys.exit()
