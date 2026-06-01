@@ -33,17 +33,20 @@ clock = pg.time.Clock()
 
 
 class GameObject:
+    """Базовый класс: позиция и цвет."""
     def __init__(self):
         self.position = START_POSITION
         self.body_color = WHITE
 
     def draw(self):
+        """Абстрактный метод."""
         error_msg = (
-            f"Метод draw не реализован в классе {self.__class__.__name__}"
+            f'Метод draw не реализован в классе {self.__class__.__name__}'
         )
         raise NotImplementedError(error_msg)
 
     def draw_cell(self, position, color=None):
+        """Отрисовывает одну ячейку."""
         rect_color = color if color is not None else self.body_color
         rect = pg.Rect(position, (GRID_SIZE, GRID_SIZE))
         pg.draw.rect(screen, rect_color, rect)
@@ -51,7 +54,9 @@ class GameObject:
 
 
 class Apple(GameObject):
+    """Класс яблока. Наследуется от GameObject."""
     def __init__(self, occupied_positions=None):
+        """Создает яблоко в случайной позиции."""
         super().__init__()
         self.body_color = APPLE_COLOR
         positions_to_use = (
@@ -70,11 +75,14 @@ class Apple(GameObject):
                 break
 
     def draw(self):
+        """Отрисовывает яблоко на экране."""
         self.draw_cell(self.position)
 
 
 class Snake(GameObject):
+    """Класс змейки. Наследуется от GameObject."""
     def __init__(self):
+        """Змейка в центре поля с начальным размером 1"""
         super().__init__()
         self.length = 1
         self.positions = [START_POSITION]
@@ -83,9 +91,11 @@ class Snake(GameObject):
         self.next_direction = None
 
     def get_head_position(self):
+        """ Возвращает координаты головы змейки."""
         return self.positions[0]
 
     def update_direction(self):
+        """Обновляет текущее направление движения."""
         if self.next_direction is not None:
             opposite_direction = (-self.direction[0], -self.direction[1])
             if opposite_direction != self.next_direction:
@@ -113,6 +123,7 @@ class Snake(GameObject):
         self.next_direction = None
 
     def draw(self):
+        """ Отрисовывает все части тела змейки."""
         for position in self.positions:
             self.draw_cell(position)
 
@@ -136,6 +147,7 @@ def handle_keys(snake):
 
 
 def main():
+    """Запускает игровой цикл."""
     pg.init()
     snake = Snake()
     apple = Apple(occupied_positions=snake.positions)
