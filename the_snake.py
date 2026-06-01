@@ -36,6 +36,7 @@ class GameObject:
     """Базовый класс: позиция и цвет."""
 
     def __init__(self, position=START_POSITION, body_color=WHITE):
+        """Базовый класс: позиция и цвет."""
         self.position = position
         self.body_color = body_color
 
